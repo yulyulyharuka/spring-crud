@@ -11,6 +11,6 @@ public interface EmployeeRepository extends CrudRepository<Employee, Long>{
     Optional<Employee> findById(Long id);
     List<Employee> findAll();
 
-    // @Query("SELECT e.name, e.role FROM employee e WHERE e.role:=role")
-    // List<Employee> findByRole(@Param("role") String role);
+    @Query("SELECT e FROM employees e WHERE e.role = :role")
+    List<Employee> findByRole(@Param("role") String role);
 }
