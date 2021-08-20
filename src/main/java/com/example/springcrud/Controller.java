@@ -2,7 +2,9 @@ package com.example.springcrud;
 
 import java.util.List;
 
-import org.hibernate.annotations.Parent;
+import com.example.springcrud.service.EmployeeService;
+import com.example.springcrud.model.Employee;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/employees")
 public class Controller {
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
 
     @GetMapping("/list")
     public ResponseEntity<List<Employee>> getAllEmployee() {
         try {
-            List<Employee> res = employeeRepository.findAll();
+            List<Employee> res = employeeService.getAllEmployees();
             return new ResponseEntity<List<Employee>>(res,HttpStatus.OK);
         } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -31,20 +33,20 @@ public class Controller {
         
     }
 
-    @GetMapping("/{employeeId}")
+    @GetMapping("/id/{employeeId}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable long employeeId) {
         try {
-            Employee e = employeeRepository.findById(employeeId).get();
+            Employee e = employeeService.getEmployeeById(employeeId);
             return new ResponseEntity<Employee>(e,HttpStatus.OK);
         } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/{employeeRole}")
+    @GetMapping("/role/{employeeRole}")
     public ResponseEntity<List<Employee>> getEmployeeByRole(@PathVariable String employeeRole) {
         try {
-            List<Employee> e = employeeRepository.findByRole(employeeRole);
+            List<Employee> e = employeeService.getEmployeesByRole(employeeRole);
             return new ResponseEntity<List<Employee>>(e,HttpStatus.OK);
         } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -54,7 +56,7 @@ public class Controller {
     @PostMapping("/add")
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
         try {
-            employeeRepository.save(employee);
+            employeeService.addEmployee(employee);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -64,7 +66,7 @@ public class Controller {
     @DeleteMapping("/delete/{employeeId}")
     public ResponseEntity<Employee> deleteEmployee(@PathVariable long employeeId) {
         try {
-            employeeRepository.deleteById(employeeId);
+            employeeService.deleteEmployeeById(employeeId);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException err) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

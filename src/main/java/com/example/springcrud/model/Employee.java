@@ -1,4 +1,4 @@
-package com.example.springcrud;
+package com.example.springcrud.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
